@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,7 +28,8 @@ Route::get('/home', function () {
 
 Route::get('/signup', function () {
     return view('signup');
-})->name('signup');
+})->middleware('guest')
+  ->name('signup');
 
 Route::post('/signup', [App\Http\Controllers\SignupController::class, 'store']);
 
@@ -43,7 +45,7 @@ Route::get('/email/verify', function () {
 })->middleware('auth')->name('verification.notice');
 
 Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
-    $request->fulfill();
+   $request->fulfill();
 
     return redirect('/home');
 })->middleware(['auth', 'signed'])->name('verification.verify');

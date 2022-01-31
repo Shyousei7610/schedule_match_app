@@ -8,7 +8,8 @@
 </head>
 <body>
     <h1>メール確認しろ!!</h1>
-    <form action="/email/verification-notification" method="post">
+    <form action="{{ Route('verification.send') }}" method="post">
+        {{ csrf_field() }}
         <button type="submit" name="action" value="send">メール再送信</button>
     </form>
 </body>
