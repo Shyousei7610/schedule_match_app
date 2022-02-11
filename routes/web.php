@@ -59,3 +59,19 @@ Route::post('/email/verification-notification', function (Request $request) {
 Route::get('/logout', [App\Http\Controllers\LoginController::class, 'logout'])
     ->middleware('auth')
     ->name('logout');
+
+Route::get('/profile', function () {
+    $user_id = Auth::id();
+    $user_profile= \App\Models\User::find($user_id)->profile->toArray();
+
+    $profile_introduction = current(array_column($user_profile, 'profile_introduction'));
+    $profile_icon = current(array_column($user_profile, 'profile_icon'));
+    $profile_header = current(array_column($user_profile, 'profile_header'));
+
+    return view('profile', ['profile_introduction' => $profile_introduction, 'profile_icon' => $profile_icon, 'profile_header' => $profile_header]);
+});
+
+
+
+Route::post('/profile', [App\Http\Controllers\ProfileController::class, 'store']);
+
