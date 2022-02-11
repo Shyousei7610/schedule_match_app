@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Profile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
@@ -30,6 +31,11 @@ class SignupController extends Controller {
         Auth::login($user, $remember);
 
         event(new Registered($user));
+
+
+        Profile::create([
+            'profile_introduction' => '',
+        ]);
 
         return redirect('/email/verify');
     }

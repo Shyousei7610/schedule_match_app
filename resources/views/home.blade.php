@@ -13,9 +13,12 @@
     @endif
     @if (Auth::check())
     <p>{{ Auth::user()->name, }}さん、ログインしています</p>
+    <a href="/profile">プロフィール</a>
     @else
     <p>ログインしていません</p>
     <a href="{{ Route('login') }}">ログイン</a>
     @endif
     <a href="{{ Route('logout') }}">ログアウト</a>
+
+
 </html>
