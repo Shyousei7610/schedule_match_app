@@ -28,7 +28,9 @@ class ScheduleController extends Controller
             'schedule_start_time' => 'required|date_format:H:i',
             'schedule_end_time' => 'required|date_format:H:i|after:schedule_start_time',
             'schedule_category' => 'required|string|max:20',
-            'schedule_area' => 'required|string|max:10',
+            'schedule_prefectures' => 'required|string',
+            'schedule_cities' => 'required|string',
+            'schedule_towns' => 'required|string',
             'schedule_detail'=> 'required|string|max:300'
         ]);
 
@@ -47,6 +49,8 @@ class ScheduleController extends Controller
             $schedule_number++;
         };
 
+        $schedule_area = $request->schedule_prefectures.$request->schedule_cities.$request->schedule_towns;
+
         Schedule::create([
             'schedule_id' => $schedule_id,
             'schedule_number' => $schedule_number,
@@ -54,7 +58,7 @@ class ScheduleController extends Controller
             'schedule_start_time' => $request->schedule_start_time,
             'schedule_end_time' => $request->schedule_end_time,
             'schedule_category' => $request->schedule_category,
-            'schedule_area' => $request->schedule_area,
+            'schedule_area' => $schedule_area,
             'schedule_detail'=> $request->schedule_detail,
         ]);
 
