@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,18 +7,37 @@
     <title>ホーム</title>
 </head>
 <body>
-    <h2>ホームページです。アカウントの予定などを示す。</h2>
-    @if (!empty($auth_result))
-    <h4>ログインは{{ $auth_result }}です</h4>
-    @endif
-    @if (Auth::check())
-    <p>{{ Auth::user()->name, }}さん、ログインしています</p>
-    <a href="/profile">プロフィール</a>
-    @else
-    <p>ログインしていません</p>
-    <a href="{{ Route('login') }}">ログイン</a>
-    @endif
-    <a href="{{ Route('logout') }}">ログアウト</a>
+    <div>
+        <h2>ホームページです。アカウントの予定などを示す。</h2>
+        @if (!empty($auth_result))
+        <h4>ログインは{{ $auth_result }}です</h4>
+        @endif
 
+        @if (Auth::check())
+        <p>{{ Auth::user()->name, }}さん、ログインしています</p>
+        <a href="/propfile">プロフィール</a>
+        <a href="{{ Route('schedule') }}">スケジュール</a>
+        <a href="{{ Route('logout') }}">ログアウト</a>
+        @else
+        <p>ログインしていません</p>
+        <a href="{{ Route('login') }}">ログイン</a>
+        @endif
+    </div>
 
+    @if (!empty($schedules))
+    <div>
+        @foreach ($schedules as $schedules_key => $schedule)
+        @foreach ($schedule as $key => $value)
+        <div>
+        <p>
+            <ul>
+                <li>{{ $value }}</li>
+            </ul>
+        </p>
+        </div>
+        @endforeach
+        @endforeach
+    </div>
+    @endif
+</body>
 </html>

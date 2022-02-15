@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller {
 
-
     public function authenticate(Request $request){
         $credentials = $request->only('email', 'password');
         $remember = true;

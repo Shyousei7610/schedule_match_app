@@ -21,10 +21,9 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/home', function () {
-    return view('home');
-})->middleware('verified')
-  ->name('home');
+Route::get('/home', [App\Http\Controllers\ScheduleController::class, 'indexHome'])
+->middleware('verified')
+->name('home');
 
 Route::get('/signup', function () {
     return view('signup');
@@ -57,8 +56,8 @@ Route::post('/email/verification-notification', function (Request $request) {
 })->middleware(['auth', 'throttle:6,1'])->name('verification.send');
 
 Route::get('/logout', [App\Http\Controllers\LoginController::class, 'logout'])
-    ->middleware('auth')
-    ->name('logout');
+->middleware('auth')
+->name('logout');
 
 Route::get('/profile', function () {
     $user_id = Auth::id();
@@ -71,7 +70,23 @@ Route::get('/profile', function () {
     return view('profile', ['profile_introduction' => $profile_introduction, 'profile_icon' => $profile_icon, 'profile_header' => $profile_header]);
 });
 
-
-
 Route::post('/profile', [App\Http\Controllers\ProfileController::class, 'store']);
+
+Route::get('/schedule', [App\Http\Controllers\ScheduleController::class, 'indexSchedule'])
+->middleware('auth')
+->name('schedule');
+
+Route::get('/register', function () {
+    return view('register');
+})->middleware('auth')
+->name('register');
+
+
+Route::delete('/schedule/delete', [App\Http\Controllers\ScheduleController::class, 'deleted'])
+->middleware('auth')
+->name('schedule.delete');
+
+
+Route::post('/register', [App\Http\Controllers\ScheduleController::class, 'register']);
+
 

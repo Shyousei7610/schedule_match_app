@@ -12,7 +12,6 @@ class Profile extends Model
 
     protected $primaryKey = 'profile_id';
 
-
     protected $fillable = [
         'profile_introduction',
         'profile_icon',
