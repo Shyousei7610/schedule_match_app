@@ -23,6 +23,7 @@
             <option value="料理食事">料理食事</option>
             <option value="楽器音楽">楽器音楽</option>
             <option value="ゲーム">ゲーム</option>
+            <option value="その他">オンライン</option>
             <option value="その他">その他</option>
         </select>
         <select id="geoapi-prefectures" name="schedule_prefectures">

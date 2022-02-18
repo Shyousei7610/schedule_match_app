@@ -7,18 +7,23 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Schedule;
+use App\Library\UserSchedule;
 use Illuminate\Support\Facades\Auth;
 
 class ScheduleController extends Controller
 {
+    public function userSchedule(){
+       return new UserSchedule(Auth::id());
+    }
+
     public function indexHome(){
-        $schedules = $this->getSchedule();
-        return view('home', ['schedules' => $schedules]);
+        $schedules = $this->userSchedule();
+        return view('home', ['schedules' => $schedules->getSchedule()]);
     }
 
     public function indexSchedule(){
-        $schedules = $this->getSchedule();
-        return view('schedule', ['schedules' => $schedules]);
+        $schedules = $this->userSchedule();
+        return view('schedule', ['schedules' => $schedules->getSchedule()]);
     }
 
 
@@ -76,31 +81,6 @@ class ScheduleController extends Controller
                 ->delete();
 
         return redirect('/schedule');
-    }
-
-
-    public function getSchedule(){
-        $user_id = Auth::id();
-        $user_schedule = Schedule::where('schedule_id', $user_id)
-                               ->orderBy('schedule_date')
-                               ->get();
-
-        if($user_schedule->isEmpty()){
-            return ;
-        }
-
-        $schedule_arrays = $user_schedule->toArray();
-
-        foreach($schedule_arrays as $arrays_key => $schedule_array){
-            foreach($schedule_array as $array_key => $user_schedule){
-
-                $schedule_content[$array_key] = $user_schedule;
-                unset($schedule_content['schedule_id']);
-            }
-
-            $schedules[] = $schedule_content;
-        }
-        return $schedules;
     }
 
 

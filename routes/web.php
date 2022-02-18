@@ -5,6 +5,11 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\SignupController;
+use App\Http\Controllers\LoginController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ScheduleController;
+use App\Http\Controllers\MatchController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,7 +26,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/home', [App\Http\Controllers\ScheduleController::class, 'indexHome'])
+Route::get('/home', [ScheduleController::class, 'indexHome'])
 ->middleware('verified')
 ->name('home');
 
@@ -30,14 +35,14 @@ Route::get('/signup', function () {
 })->middleware('guest')
   ->name('signup');
 
-Route::post('/signup', [App\Http\Controllers\SignupController::class, 'store']);
+Route::post('/signup', [SignupController::class, 'store']);
 
 Route::get('/login', function () {
     return view('login');
 })->middleware('guest')
   ->name('login');
 
-Route::post('/login', [App\Http\Controllers\LoginController::class, 'authenticate']);
+Route::post('/login', [LoginController::class, 'authenticate']);
 
 Route::get('/email/verify', function () {
     return view('verify-email');
@@ -55,7 +60,7 @@ Route::post('/email/verification-notification', function (Request $request) {
     return back()->with('message', 'Verification link sent!');
 })->middleware(['auth', 'throttle:6,1'])->name('verification.send');
 
-Route::get('/logout', [App\Http\Controllers\LoginController::class, 'logout'])
+Route::get('/logout', [LoginController::class, 'logout'])
 ->middleware('auth')
 ->name('logout');
 
@@ -70,9 +75,9 @@ Route::get('/profile', function () {
     return view('profile', ['profile_introduction' => $profile_introduction, 'profile_icon' => $profile_icon, 'profile_header' => $profile_header]);
 });
 
-Route::post('/profile', [App\Http\Controllers\ProfileController::class, 'store']);
+Route::post('/profile', [ProfileController::class, 'store']);
 
-Route::get('/schedule', [App\Http\Controllers\ScheduleController::class, 'indexSchedule'])
+Route::get('/schedule', [ScheduleController::class, 'indexSchedule'])
 ->middleware('auth')
 ->name('schedule');
 
@@ -82,11 +87,22 @@ Route::get('/register', function () {
 ->name('register');
 
 
-Route::delete('/schedule/delete', [App\Http\Controllers\ScheduleController::class, 'deleted'])
+Route::delete('/schedule/delete', [ScheduleController::class, 'deleted'])
 ->middleware('auth')
 ->name('schedule.delete');
 
+Route::post('/register', [ScheduleController::class, 'register']);
 
-Route::post('/register', [App\Http\Controllers\ScheduleController::class, 'register']);
 
+Route::get('/match/search', [MatchController::class, 'search'])
+->middleware('auth')
+->name('match.search');
+
+Route::get('/match/result', [MatchController::class, 'indexResult'])
+->middleware('auth')
+->name('match.result');
+
+Route::post('/match/apply', [MatchController::class, 'apply'])
+->middleware('auth')
+->name('match.apply');
 

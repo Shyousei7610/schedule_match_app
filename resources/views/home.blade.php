@@ -28,6 +28,7 @@
     <div>
         @foreach ($schedules as $schedules_key => $schedule)
         @foreach ($schedule as $key => $value)
+        @continue($key == 'schedule_number')
         <div>
         <p>
             <ul>
