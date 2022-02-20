@@ -17,7 +17,9 @@
               <p>{{ $match_result->area }}</p>
               <p>{{ $match_result->schedule_detail }}</p>
               <form action="{{ route('match.apply') }}" method="post">
-                <input type="hidden" name="partner" value="{{ $match_result->schedule_id }}">
+                @csrf
+                <input type="hidden" name="partner_parsonal" value="{{ $match_result->personal }}">
+                <input type="hidden" name="schedule_number" value="{{ $schedule_number }}">
                 <input type="hidden" name="partner_number" value="{{ $match_result->schedule_number }}">
                 <input type="submit" value="申請する">
               </form>

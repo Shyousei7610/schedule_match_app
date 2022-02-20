@@ -77,7 +77,7 @@ class ScheduleController extends Controller
     public function deleted(Request $request){
         $user_id = Auth::id();
         Schedule::where('schedule_id', $user_id)
-                ->where('schedule_number', $request->number)
+                ->where('schedule_number', $request->schedule_number)
                 ->delete();
 
         return redirect('/schedule');

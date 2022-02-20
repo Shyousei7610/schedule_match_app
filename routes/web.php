@@ -9,6 +9,7 @@ use App\Http\Controllers\SignupController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ScheduleController;
+use App\Http\Controllers\ChatController;
 use App\Http\Controllers\MatchController;
 
 /*
@@ -106,3 +107,9 @@ Route::post('/match/apply', [MatchController::class, 'apply'])
 ->middleware('auth')
 ->name('match.apply');
 
+Route::get('/message/{identifier}', [ChatController::class, 'index'])
+->middleware('auth');
+
+Route::post('/message/register', [ChatController::class, 'register'])
+->middleware('auth')
+->name('message.register');

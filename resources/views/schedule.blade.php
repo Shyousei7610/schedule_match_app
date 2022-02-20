@@ -18,11 +18,11 @@
                 <form name="delete_form" action="{{ route('schedule.delete') }}" method="post">
                     @method('DELETE')
                     @csrf
-                    <input type="hidden" name="number" value="{{ $value }}">
+                    <input type="hidden" name="schedule_number" value="{{ $value }}">
                     <input type="submit" value="削除する">
                 </form>
                 <form name="match-form" action="{{ route('match.search') }}" method="get">
-                    <input type="hidden" name="number" value="{{ $value }}">
+                    <input type="hidden" name="schedule_number" value="{{ $value }}">
                     <input type="submit" value="マッチする">
                 </form>
                 @continue($key == 'schedule_number')
