@@ -10,10 +10,15 @@
     <h2>新規登録ページです。</h2>
 
     <form action="/signup" method="post">
-        {{ csrf_field() }}
+        @csrf
         <dl>
             <dt>名前:</dt>
             <dd><input type="text" name="name" size="30">
+                <span>{{ $errors->first('name') }}</span></dd>
+         </dl>
+         <dl>
+            <dt>ユーザーID:</dt>
+            <dd><input type="text" name="personal" size="30">
                 <span>{{ $errors->first('name') }}</span></dd>
          </dl>
          <dl>

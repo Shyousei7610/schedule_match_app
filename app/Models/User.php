@@ -20,6 +20,8 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     protected $fillable = [
         'name',
+        'personal',
+        'identifier',
         'email',
         'password',
     ];
@@ -30,6 +32,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array<int, string>
      */
     protected $hidden = [
+        'id',
         'remember_token',
     ];
 
@@ -48,5 +51,9 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function schedule(){
         return $this->hasMany(Schedule::class, 'schedule_id');
+    }
+
+    public function chat(){
+        return $this->hasOne(Chat::class, 'chat_personal', 'personal');
     }
 }

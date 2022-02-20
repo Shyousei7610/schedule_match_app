@@ -16,4 +16,9 @@ class Schedule extends Model
     public $incrementing = false;
 
     protected $guarded =[];
+
+
+    protected $hidden = [
+        'schedule_id',
+    ];
 }
