@@ -29,26 +29,8 @@ class UserSchedule
                                ->get();
 
 
-        return $this->convertArray($user_schedule);
+        return $user_schedule;
 
     }
 
-    public function convertArray($user_schedule){
-        if($user_schedule->isEmpty()){
-            return ;
-        }
-
-        $schedule_arrays = $user_schedule->toArray();
-
-        foreach($schedule_arrays as $arrays_key => $schedule_array){
-            foreach($schedule_array as $array_key => $user_schedule){
-
-                $schedule_content[$array_key] = $user_schedule;
-            }
-            unset($schedule_content['schedule_id']);
-
-            $schedules[] = $schedule_content;
-        }
-        return $schedules;
-    }
 }

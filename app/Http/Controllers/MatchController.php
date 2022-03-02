@@ -136,6 +136,13 @@ class MatchController extends Controller
             $chat_identifier = $partner_identifier.$own_identifier;
         }
 
+        $result1 = Matches::where('match_id', $id_small)
+                          ->where('match_partner_id', $id_large);
+
+        if($result1->exists()) {
+
+        }else{
+
         Matches::create([
             'match_id' => $id_small,
             'match_partner_id' => $id_large,
@@ -144,14 +151,14 @@ class MatchController extends Controller
             'match_status' => null,
         ]);
 
-
-
         Chat::create([
             'chat_identifier' => $chat_identifier,
             'chat_personal' => $own_personal,
             'chat_partner_personal' => $partner_personal,
             'chat_text' => null
         ]);
+    }
+
 
         return redirect("/message/${chat_identifier}");
 

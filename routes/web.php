@@ -1,5 +1,6 @@
 <?php
 
+use App\Events\AddedMessage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
@@ -74,7 +75,7 @@ Route::get('/profile', function () {
     $profile_header = current(array_column($user_profile, 'profile_header'));
 
     return view('profile', ['profile_introduction' => $profile_introduction, 'profile_icon' => $profile_icon, 'profile_header' => $profile_header]);
-});
+})->name('profile');
 
 Route::post('/profile', [ProfileController::class, 'store']);
 
@@ -113,3 +114,9 @@ Route::get('/message/{identifier}', [ChatController::class, 'index'])
 Route::post('/message/register', [ChatController::class, 'register'])
 ->middleware('auth')
 ->name('message.register');
+
+
+Route::get('/tasks', function () {
+    $task = ['id' => 1, 'name' => 'メールの確認'];
+    event(new AddedMessage($task));
+});

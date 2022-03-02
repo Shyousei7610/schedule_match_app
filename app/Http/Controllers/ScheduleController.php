@@ -17,13 +17,15 @@ class ScheduleController extends Controller
     }
 
     public function indexHome(){
-        $schedules = $this->userSchedule();
-        return view('home', ['schedules' => $schedules->getSchedule()]);
+        $user_schedules = $this->userSchedule();
+        $schedules = $user_schedules->getSchedule();
+        return view('home', ['schedules' => $schedules]);
     }
 
     public function indexSchedule(){
-        $schedules = $this->userSchedule();
-        return view('schedule', ['schedules' => $schedules->getSchedule()]);
+        $user_schedules = $this->userSchedule();
+        $schedules = $user_schedules->getSchedule();
+        return view('schedule', ['schedules' => $schedules]);
     }
 
 
