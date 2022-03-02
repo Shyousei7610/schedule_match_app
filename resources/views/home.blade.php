@@ -5,10 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>ホーム</title>
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 </head>
 <body>
     <div>
-        <h2>ホームページです。アカウントの予定などを示す。</h2>
+        <h2 class="text-red-200 font-bold underline">ホームページです。アカウントの予定などを示す。</h2>
         @if (!empty($auth_result))
         <h4>ログインは{{ $auth_result }}です</h4>
         @endif
