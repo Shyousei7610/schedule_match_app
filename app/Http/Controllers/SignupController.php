@@ -10,7 +10,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Auth\Events\Registered;
-use Illuminate\Support\Str;
 
 
 class SignupController extends Controller {
@@ -26,7 +25,6 @@ class SignupController extends Controller {
         $user = User::create([
             'name' => $request->name,
             'personal' => $request->personal,
-            'identifier' => Str::uuid(),
             'email' => $request->email,
             'password' => Hash::make($request->password)
         ]);

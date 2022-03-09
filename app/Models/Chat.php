@@ -9,7 +9,7 @@ class Chat extends Model
 {
     use HasFactory;
 
-    protected $primaryKey = ['chat_identifer'];
+    protected $primaryKey = ['chat_count'];
 
     public $incrementing = false;
 

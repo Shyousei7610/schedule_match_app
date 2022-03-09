@@ -16,30 +16,13 @@
 
         @if (Auth::check())
         <p>{{ Auth::user()->name, }}さん、ログインしています</p>
-        <a href="/propfile">プロフィール</a>
-        <a href="{{ Route('schedule') }}">スケジュール</a>
+        <a href="{{ Route('profile') }}">プロフィール</a>
+        <a href="{{ Route('schedule.list') }}">スケジュール</a>
         <a href="{{ Route('logout') }}">ログアウト</a>
         @else
         <p>ログインしていません</p>
         <a href="{{ Route('login') }}">ログイン</a>
         @endif
     </div>
-
-    @if (!empty($schedules))
-    <div>
-        @foreach ($schedules as $schedules_key => $schedule)
-        @foreach ($schedule as $key => $value)
-        @continue($key == 'schedule_number')
-        <div>
-        <p>
-            <ul>
-                <li>{{ $value }}</li>
-            </ul>
-        </p>
-        </div>
-        @endforeach
-        @endforeach
-    </div>
-    @endif
 </body>
 </html>

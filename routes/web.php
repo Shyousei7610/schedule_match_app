@@ -79,26 +79,24 @@ Route::get('/profile', function () {
 
 Route::post('/profile', [ProfileController::class, 'store']);
 
-Route::get('/schedule', [ScheduleController::class, 'indexSchedule'])
+Route::get('/schedule/list', [ScheduleController::class, 'indexScheduleList'])
 ->middleware('auth')
-->name('schedule');
+->name('schedule.list');
 
-Route::get('/register', function () {
-    return view('register');
-})->middleware('auth')
-->name('register');
+Route::get('/schedule/register', [ScheduleController::class, 'indexScheduleRegister'])
+->middleware('auth')
+->name('schedule.register');
 
+Route::post('/schedule/register', [ScheduleController::class, 'register']);
 
-Route::delete('/schedule/delete', [ScheduleController::class, 'deleted'])
+Route::delete('/schedule/delete', [ScheduleController::class, 'delete'])
 ->middleware('auth')
 ->name('schedule.delete');
 
-Route::post('/register', [ScheduleController::class, 'register']);
 
-
-Route::get('/match/search', [MatchController::class, 'search'])
+Route::get('/match/search', [MatchController::class, 'match'])
 ->middleware('auth')
-->name('match.search');
+->name('match.match');
 
 Route::get('/match/result', [MatchController::class, 'indexResult'])
 ->middleware('auth')
@@ -111,9 +109,8 @@ Route::post('/match/apply', [MatchController::class, 'apply'])
 Route::get('/message/{identifier}', [ChatController::class, 'index'])
 ->middleware('auth');
 
-Route::post('/message/register', [ChatController::class, 'register'])
-->middleware('auth')
-->name('message.register');
+Route::post('/message/{identifier}', [ChatController::class, 'register'])
+->middleware('auth');
 
 
 Route::get('/tasks', function () {

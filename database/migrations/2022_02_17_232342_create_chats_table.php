@@ -14,9 +14,10 @@ class CreateChatsTable extends Migration
     public function up()
     {
         Schema::create('chats', function (Blueprint $table) {
-            $table->string('chat_identifier')->primary();
-            $table->string('chat_personal');
-            $table->string('chat_partner_personal');
+            $table->bigIncrements('chat_count');
+            $table->string('chat_identifier');
+            $table->string('chat_sender')->comment('送信者');
+            $table->string('chat_reciever')->comment('受信者');
             $table->string('chat_text')->nullable();
             $table->timestamps();
         });

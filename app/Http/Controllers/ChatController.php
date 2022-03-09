@@ -11,28 +11,39 @@ class ChatController extends Controller
 {
 
     public function index($identifier){
-        $messages = Chat::select('chat_personal', 'chat_partner_personal', 'chat_text')
+        $messages = Chat::select('chat_sender', 'chat_reciever', 'chat_text')
                         ->where('chat_identifier', $identifier)
                         ->get();
 
-        $user_personal = User::where('id', Auth::id())
-                             ->value('personal');
+        $users = Chat::leftjoin('users', 'users.personal', '=', 'chats.chat_sender')
+                                ->where('id', Auth::id())
+                                ->where('chat_identifier', $identifier)
+                                ->select('chat_reciever', 'personal')
+                                ->first();
 
-        foreach($messages as $message){
-            if($message->chat_personal == $user_personal){
-                $partner_name = $message->chat_partner_personal;
-                break;
-            }elseif($message->chat_personal ==$message->chat_partner_personal ){
-                $partner_name = $user_personal;
-                break;
-            }
-        }
 
-        return view('message.message',['messages' => $messages, 'personal' => $user_personal, 'partner' => $partner_name]);
+        return view('message.message',['messages' => $messages, 'user_personal' => $users->personal, 'partner' => $users->chat_reciever, 'url' => $identifier]);
 
     }
 
-    public function register(){
-        return redirect('/home');
+    public function register(Request $request){
+
+        $request->validate([
+            'chat_identifier' => 'required',
+            'chat_sender' => 'required|string',
+            'chat_reciever' => 'required|string',
+            'chat_text' => 'required|string|max:300'
+        ]);
+
+        $chat_identifier = $request->chat_identifier;
+
+        Chat::create([
+            'chat_identifier' => $chat_identifier,
+            'chat_sender' => $request->chat_sender,
+            'chat_reciever' => $request->chat_reciever,
+            'chat_text' => $request->chat_text
+        ]);
+
+        return redirect("/message/${chat_identifier}");
     }
 }
