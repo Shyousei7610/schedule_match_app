@@ -14,17 +14,15 @@ class CreateSchedulesTable extends Migration
     public function up()
     {
         Schema::create('schedules', function (Blueprint $table) {
+            $table->bigIncrements('schedule_number');
             $table->unsignedBigInteger('schedule_id');
-            $table->unsignedInteger('schedule_number');
             $table->date('schedule_date');
             $table->time('schedule_start_time');
             $table->time('schedule_end_time');
-            $table->string('schedule_category');
-            $table->string('schedule_area');
+            $table->string('schedule_approval');
+            $table->string('schedule_game_title');
             $table->string('schedule_detail');
             $table->timestamps();
-
-            $table->primary(['schedule_id', 'schedule_number']);
         });
     }
 

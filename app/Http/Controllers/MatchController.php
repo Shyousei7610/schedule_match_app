@@ -8,174 +8,101 @@ use Illuminate\Http\Response;
 use App\Models\User;
 use App\Models\Schedule;
 use App\Models\Matches;
-use GuzzleHttp\Psr7\Request as Psr7Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
+use App\Library\UserSchedule;
 
 class MatchController extends Controller
 {
+    use UserSchedule;
+
     public function indexResult(){
         return view('match.result',[]);
     }
 
-    public function search(Request $request){
+    public function match(Request $request){
         $user_schedule = $this->getSchedule($request);
 
+        $schedule_query = Schedule::leftJoin('users', 'users.id', '=', 'schedules.schedule_id')
+                              ->leftJoin('matches', 'matches.match_number', '=', 'schedules.schedule_number')
+                              ->select('schedule_number', 'schedule_date', 'schedule_game_title', 'schedule_approval', 'schedule_start_time', 'schedule_end_time', 'name', 'personal', 'match_status')
+                              ->whereNotIn('match_result', [true])
+                              ->whereNotIn('match_partner_number', [$request->schedule_number])
+                              ->where('match_status', null)
+                              ->where('schedule_id', '<>',[$user_schedule['schedule_id']])
+                              ->whereDate('schedule_date', $user_schedule['schedule_date'])
+                              ->where('schedule_game_title', $user_schedule['schedule_game_title'])
+                              ->whereTime('schedule_start_time', '>=', $user_schedule['schedule_start_time'])
+                              ->whereTime('schedule_end_time', '<=', $user_schedule['schedule_end_time']);
 
-        foreach($user_schedule as $schedule){
-            $schedule_id = $schedule->schedule_id;
-            $date = $schedule->schedule_date;
-            $category = $schedule->schedule_category;
-            $area = $schedule->schedule_area;
-            $time_start = $schedule->schedule_start_time;
-            $time_end = $schedule->schedule_end_time;
+
+        $schedule_count = $schedule_query->count();
+
+        if($schedule_count >= 5){
+            $schedule_match = $schedule_query->get();
+
+            return view('match.index',['schedule_match' =>  $schedule_match, 'schedule_number' => $request->schedule_number, 'personal' => $user_schedule['personal']]);
+
+        }elseif($schedule_count < 5){
+
+            $time_range = '2hours';
+            $time_start = date('H:i', strtotime($user_schedule['schedule_start_time']."-".$time_range));
+            $time_end = date('H:i', strtotime($user_schedule['schedule_end_time']."+".$time_range));
+
+            $schedule_query = Schedule::leftJoin('users', 'users.id', '=', 'schedules.schedule_id')
+                                      ->leftJoin('matches', 'matches.match_number', '=', 'schedules.schedule_number')
+                                      ->select('schedule_number', 'schedule_date', 'schedule_game_title', 'schedule_approval', 'schedule_start_time', 'schedule_end_time', 'name', 'personal', 'match_status')
+                                      ->where('schedule_id', '<>',[$user_schedule['schedule_id']])
+                                      ->whereNotIn('match_result', [true])
+                                      ->whereDate('schedule_date', $user_schedule['schedule_date'])
+                                      ->where('schedule_game_title', $user_schedule['schedule_game_title'])
+                                      ->whereTime('schedule_start_time', '>=', $time_start)
+                                      ->whereTime('schedule_end_time', '<=', $time_end);
         }
 
-
-        $schedule_query = Schedule::leftJoin('users', 'schedules.schedule_id', '=', 'users.id')
-                                    ->select('schedule_date', 'schedule_category', 'schedule_area', 'schedule_start_time', 'schedule_end_time', 'name', 'personal', 'identifier')
-                                    ->whereNotIn('schedule_id', [$schedule_id])
-                                    ->whereDate('schedule_date', $date)
-                                    ->where('schedule_category', $category)
-                                    ->where('schedule_area', $area)
-                                    ->whereTime('schedule_start_time', '>=', $time_start)
-                                    ->whereTime('schedule_end_time', '<=', $time_end);
-
-        $schedule_match = $schedule_query->get();
-
-
-
-        if($schedule_query->count() >= 5){
-            return view('match.result',['schedule_match' =>  $schedule_match, 'schedule_number' => $request->schedule_number]);
-
-        }elseif($schedule_query->count() < 5){
-
-            $time_range = '1hours';
-            $time_start = date('H:i', strtotime($time_start."-".$time_range));
-            $time_end = date('H:i', strtotime($time_end."+".$time_range));
-
-            $schedule_query = Schedule::leftJoin('users', 'schedules.schedule_id', '=', 'users.id')
-                                        ->select('schedule_date', 'schedule_category', 'schedule_area', 'schedule_start_time', 'schedule_end_time', 'name', 'personal', 'identifier')
-                                        ->whereNotIn('schedule_id', [$schedule_id])
-                                        ->whereDate('schedule_date', $date)
-                                        ->where('schedule_category', $category)
-                                        ->where('schedule_area', $area)
-                                        ->whereTime('schedule_start_time', '>=', $time_start)
-                                        ->whereTime('schedule_end_time', '<=', $time_end);
-        }
-
-        $schedule_match = $schedule_query->get();
-
-
-        if($schedule_query->count() >= 5){
-            return view('match.result',['schedule_match' =>  $schedule_match, 'schedule_number' => $request->schedule_number]);
-
-        }elseif($schedule_query->count() < 5){
-
-            $time_range = '1hours';
-            $time_start = date('H:i', strtotime($time_start."-".$time_range));
-            $time_end = date('H:i', strtotime($time_end."+".$time_range));
-
-            $schedule_query = Schedule::leftJoin('users', 'schedules.schedule_id', '=', 'users.id')
-                                        ->select('schedule_number', 'schedule_date', 'schedule_category', 'schedule_area', 'schedule_start_time', 'schedule_end_time', 'name', 'personal')
-                                        ->whereNotIn('schedule_id', [$schedule_id])
-                                         ->whereDate('schedule_date', $date)
-                                         ->where('schedule_category', $category)
-                                         ->where('schedule_area', $area)
-                                         ->whereTime('schedule_start_time', '>=', $time_start)
-                                         ->whereTime('schedule_end_time', '<=', $time_end);
-        }
-
-        $schedule_match = $schedule_query->get();
-
-
-        if($schedule_query->exists()){
-            return view('match.result',['schedule_match' =>  $schedule_match, 'schedule_number' => $request->schedule_number]);
-
-        }elseif(! $schedule_query->exists()){
-            $match_result = '相手が見つかりませんでした';
-            return view('match.result',['match_result' => $match_result]);
+        if($schedule_query->exists()) {
+            $schedule_match = $schedule_query->get();
+            return view('match.index',['schedule_match' =>  $schedule_match, 'schedule_number' => $request->schedule_number, 'personal' => $user_schedule['personal']]);
+        } elseif(! $schedule_query->exists()) {
+            $match_result = 'マッチする相手が見つかりませんでした';
+            return view('match.index',['match_result' => $match_result]);
         }
 
         return redirect(route('schedule'));
     }
 
-    public function apply(Request $request){
+    public function apply(Request $request) {
 
-        $partner = User::select('id', 'personal','identifier')
-                        ->where('personal', $request->partner_parsonal)
-                        ->get();
-
-        $own = User::select('id', 'personal','identifier')
-                     ->where('id', Auth::id())
-                     ->get();
-
-        foreach($partner as $user_partner){
-            $partner_id = $user_partner->id;
-            $partner_identifier = $user_partner->identifier;
-            $partner_personal = $user_partner->personal;
-        }
-
-        foreach($own as $user_own){
-            $own_id = $user_own->id;
-            $own_identifier = $user_own->identifier;
-            $own_personal = $user_own->personal;
-        }
+        $result1 = Matches::where('match_number', $request->schedule_number)
+                          ->where('match_partner_number', $request->partner_schedule_number);
 
 
-        if ($own_id < $partner_id){
-            $id_small = $own_id;
-            $id_large = $partner_id;
-            $schedule_number = $request->schedule_number;
-            $partner_number = $request->partner_number;
-            $chat_identifier = $own_identifier.$partner_identifier;
-        }elseif($own_id > $partner_id){
-            $id_small = $partner_id;
-            $id_large = $own_id;
-            $schedule_number = $request->partner_number;
-            $partner_number = $request->schedule_number;
-            $chat_identifier = $partner_identifier.$own_identifier;
-        }
-
-        $result1 = Matches::where('match_id', $id_small)
-                          ->where('match_partner_id', $id_large);
 
         if($result1->exists()) {
 
-        }else{
+        } else {
+
+
+        $chat_identifier = Str::uuid();
 
         Matches::create([
-            'match_id' => $id_small,
-            'match_partner_id' => $id_large,
-            'match_schedule_number' => $schedule_number,
-            'match_partner_schedule_number' => $partner_number,
-            'match_status' => null,
+            'match_number' => $request->schedule_number,
+            'match_partner_number' => $request->partner_schedule_number,
+            'match_status' => true,
+            'match_result' => null,
         ]);
 
         Chat::create([
             'chat_identifier' => $chat_identifier,
-            'chat_personal' => $own_personal,
-            'chat_partner_personal' => $partner_personal,
+            'chat_sender' => $request->personal,
+            'chat_reciever' => $request->partner_personal,
             'chat_text' => null
         ]);
     }
 
-
         return redirect("/message/${chat_identifier}");
-
     }
 
-    public function getSchedule(Request $request){
-        $user_id = Auth::id();
-        $schedule_number = $request->schedule_number;
-        $user_schedule = Schedule::where('schedule_id', $user_id)
-                                 ->where('schedule_number', $schedule_number)
-                                 ->get();
-
-        if($user_schedule->isEmpty()){
-            return redirect()->route('home');
-        }
-        return $user_schedule;
-    }
 }
 
 

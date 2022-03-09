@@ -14,14 +14,13 @@ class CreateMatchTable extends Migration
     public function up()
     {
         Schema::create('matches', function (Blueprint $table) {
-            $table->unsignedBigInteger('match_id');
-            $table->unsignedBigInteger('match_partner_id');
-            $table->unsignedInteger('match_schedule_number');
-            $table->unsignedInteger('match_partner_schedule_number');
+            $table->unsignedBigInteger('match_number');
+            $table->unsignedBigInteger('match_partner_number');
             $table->boolean('match_status')->nullable();
+            $table->boolean('match_result')->nullable();
             $table->timestamps();
 
-            $table->primary(['match_id', 'match_partner_id']);
+            $table->primary(['match_number', 'match_partner_number']);
         });
     }
 

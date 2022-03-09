@@ -11,7 +11,7 @@ class Schedule extends Model
     use HasFactory;
     use HasCompositePrimaryKey;
 
-    protected $primaryKey = ['schedule_id', 'schedule_number'];
+    protected $primaryKey = ['schedule_number'];
 
     public $incrementing = false;
 
@@ -19,6 +19,5 @@ class Schedule extends Model
 
 
     protected $hidden = [
-        'schedule_id',
     ];
 }

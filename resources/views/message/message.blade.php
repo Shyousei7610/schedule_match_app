@@ -10,20 +10,21 @@
     <div>
         <h3>{{ $partner }}さんとのチャット</h3>
         @if(! empty($messages))
-         @if(! empty($messages->chat_text))
            @foreach ($messages as $message)
-              <p>{{ $message->chat_personal }}</p>
-              <p>{{ $message->chat_text }}</p>
+               @if(! empty($message->chat_text))
+                  <p>{{ $message->chat_sender }}</p>
+                  <p>{{ $message->chat_text }}</p>
+               @endif
            @endforeach
-         @endif
-         <message-component></message-component>
-              <form action="{{ route('message.register') }}" method="post">
-                @csrf
-                <input type="text" v-model="newMessage" @blur="addMessage" name="chat_text" size="300">
-                <input type="hidden" name="chat_personal" value= "{{ $personal }}">
-                <input type="submit" value="送信">
-              </form>
-
+           <message-component></message-component>
+           <form action="/message/{{ $url }}" method="post">
+             @csrf
+             <input type="text" v-model="newMessage" @blur="addMessage" name="chat_text" size="300">
+             <input type="hidden" name="chat_sender" value= "{{ $user_personal }}">
+             <input type="hidden" name="chat_reciever" value= "{{ $partner }}">
+             <input type="hidden" name="chat_identifier" value= "{{ $url }}">
+             <input type="submit" value="送信">
+           </form>
         @else
         <p>チャット相手がいません</p>
         @endif

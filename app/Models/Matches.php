@@ -11,7 +11,7 @@ class Matches extends Model
 
     protected $table = 'matches';
 
-    protected $primaryKey = ['match_id', 'match_partner_id'];
+    protected $primaryKey = ['match_number', 'match_partner_number'];
 
     public $incrementing = false;
 
